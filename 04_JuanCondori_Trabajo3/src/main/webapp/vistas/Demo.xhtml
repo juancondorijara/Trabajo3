@@ -1,0 +1,202 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                template="./Plantilla.xhtml"
+                xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+    <ui:define name="content">
+        <h:head>
+        </h:head>
+        <p:growl id="mensajes" severity="info,fatal" showSummary="true" showDetail="true"/>
+
+        <h:body>
+            <p:growl id="mensaje" showDetail="true"/>
+            <p:growl id="growl-sticky" for="sticky-key" showDetail="true" sticky="true" />
+
+            <div>
+                <center>
+                    <h:form>
+                        <h1 style="color:black; font-weight:bold; font-size:40px">DEMO OWASP #8 INSECURE DESERIALIZACIÓN</h1>
+                    </h:form>
+                </center>
+            </div>
+            <br/>
+
+            <center>
+                <h:form>
+                    <h1 style="color:black; font-weight:bold; font-size:25px">Serializado Débil</h1>
+                </h:form>
+            </center>
+            <h:form id="form2">
+                <center>
+                    <p:panelGrid columns="4" styleClass="ui-noborder">
+                        <p:inputText id="serializar" value="#{serializarC.serializar.SERDEM}" maxlength="50" style="width:150px;" required="true" requiredMessage="Ingrese los Nombres">
+                            <p:ajax update="msgNombres" event="keyup" delay="800"/>
+                            <p:tooltip for="serializar" value="Ingrese un Texto" trackMouse="focus"/>
+                        </p:inputText>
+                        <p:message id="msgNombres" for="serializar"/>
+                        <p:commandButton value="SERIALIZAR DEBIL" actionListener="#{serializarC.serializa()}" icon="pi pi-arrow-right" style="font-weight:bold; font-size:16px"
+                                         update="msgNombres deserializar mensajes">
+                        </p:commandButton>
+                        <p:inputText id="deserializar" value="#{serializarC.serializar.BYTDEM}" maxlength="50" style="width:150px;" requiredMessage="Ingrese los Nombres">
+                            <p:tooltip for="deserializar" value="Ingrese los Nombres" trackMouse="focus"/>
+                        </p:inputText>
+                    </p:panelGrid>
+                </center>
+            </h:form>
+            <br/>
+
+            <center>
+                <h:form>
+                    <h1 style="color:black; font-weight:bold; font-size:25px">Deserializado Débil</h1>
+                </h:form>
+            </center>
+            <h:form id="form3">
+                <center>
+                    <p:panelGrid columns="4" styleClass="ui-noborder">
+                        <p:inputText id="serializar" value="#{serializarC.serializar.DESDEM}" maxlength="50" style="width:150px;" required="true" requiredMessage="Ingrese los Nombres">
+                            <p:ajax update="msgNombres" event="keyup" delay="800"/>
+                            <p:tooltip for="serializar" value="Ingrese un Texto" trackMouse="focus"/>
+                        </p:inputText>
+                        <p:message id="msgNombres" for="serializar"/>
+                        <p:commandButton value="DESERIALIZAR DEBIL" actionListener="#{serializarC.deserializa()}" icon="pi pi-arrow-right" style="font-weight:bold; font-size:16px"
+                                         update="msgNombres deserializar mensajes">
+                        </p:commandButton>
+                        <p:inputText id="deserializar" value="#{serializarC.serializar.SERDEM}" maxlength="50" style="width:350px;" requiredMessage="Ingrese los Nombres">
+                            <p:tooltip for="deserializar" value="Ingrese los Nombres" trackMouse="focus"/>
+                        </p:inputText>
+                    </p:panelGrid>
+                </center>
+            </h:form>
+            <br/>
+            
+            <center>
+                <h:form>
+                    <h1 style="color:black; font-weight:bold; font-size:25px">Algoritmo MD5</h1>
+                </h:form>
+            </center>
+            <h:form id="form5">
+                <center>
+                    <p:panelGrid columns="5" styleClass="ui-noborder">
+                        <p:inputText id="serializar" value="#{serializarC.serializar.SERDEM}" maxlength="50" style="width:130px;" required="true" requiredMessage="Ingrese un Texto">
+                            <p:ajax update="msgSerializar" event="keyup" delay="800"/>
+                            <p:tooltip for="serializar" value="Ingrese un Texto" trackMouse="focus"/>
+                        </p:inputText>
+                        <p:message id="msgSerializar" for="serializar"/>
+                        <p:commandButton value="SERIALIZAR" actionListener="#{serializarC.securePassword_MD5()}" icon="pi pi-arrow-right" style="font-weight:bold; font-size:16px"
+                                         update="msgSerializar deserializar mensajes">
+                        </p:commandButton>
+                        <p:inputText id="deserializar" value="#{serializarC.serializar.DESDEM}" maxlength="50" style="width:300px;">
+                            <p:tooltip for="deserializar" value="Se Serializará" trackMouse="focus"/>
+                        </p:inputText>
+                        <p:commandButton value="REGISTRAR" actionListener="#{serializarC.registrar()}" icon="pi pi-save" style="font-weight:bold; font-size:20px"
+                                         update="form5 mensajes">
+                            <p:confirm header="Confirmación" type="popup" message="¿Deseas Registrar?" icon="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
+                    </p:panelGrid>
+                </center>
+            </h:form>
+            <br/>
+            
+            <center>
+                <h:form>
+                    <h1 style="color:black; font-weight:bold; font-size:25px">Algoritmo hash SHA-1</h1>
+                </h:form>
+            </center>
+            <h:form id="form6">
+                <center>
+                    <p:panelGrid columns="5" styleClass="ui-noborder">
+                        <p:inputText id="serializar" value="#{serializarC.serializar.SERDEM}" maxlength="50" style="width:130px;" required="true" requiredMessage="Ingrese un Texto">
+                            <p:ajax update="msgSerializar" event="keyup" delay="800"/>
+                            <p:tooltip for="serializar" value="Ingrese un Texto" trackMouse="focus"/>
+                        </p:inputText>
+                        <p:message id="msgSerializar" for="serializar"/>
+                        <p:commandButton value="SERIALIZAR" actionListener="#{serializarC.securePassword_SHA_1()}" icon="pi pi-arrow-right" style="font-weight:bold; font-size:16px"
+                                         update="msgSerializar deserializar mensajes">
+                        </p:commandButton>
+                        <p:inputText id="deserializar" value="#{serializarC.serializar.DESDEM}" maxlength="50" style="width:350px;">
+                            <p:tooltip for="deserializar" value="Se Serializará" trackMouse="focus"/>
+                        </p:inputText>
+                        <p:commandButton value="REGISTRAR" actionListener="#{serializarC.registrar()}" icon="pi pi-save" style="font-weight:bold; font-size:20px"
+                                         update="form6 mensajes">
+                            <p:confirm header="Confirmación" type="popup" message="¿Deseas Registrar?" icon="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
+                    </p:panelGrid>
+                </center>
+            </h:form>
+            <br/>
+            
+            <center>
+                <h:form>
+                    <h1 style="color:black; font-weight:bold; font-size:25px">Algoritmo hash SHA-256</h1>
+                </h:form>
+            </center>
+            <h:form id="form7">
+                <center>
+                    <p:panelGrid columns="5" styleClass="ui-noborder">
+                        <p:inputText id="serializar" value="#{serializarC.serializar.SERDEM}" maxlength="50" style="width:130px;" required="true" requiredMessage="Ingrese un Texto">
+                            <p:ajax update="msgSerializar" event="keyup" delay="800"/>
+                            <p:tooltip for="serializar" value="Ingrese un Texto" trackMouse="focus"/>
+                        </p:inputText>
+                        <p:message id="msgSerializar" for="serializar"/>
+                        <p:commandButton value="SERIALIZAR" actionListener="#{serializarC.securePassword_SHA_256()}" icon="pi pi-arrow-right" style="font-weight:bold; font-size:16px"
+                                         update="msgSerializar deserializar mensajes">
+                        </p:commandButton>
+                        <p:inputText id="deserializar" value="#{serializarC.serializar.DESDEM}" maxlength="50" style="width:550px;">
+                            <p:tooltip for="deserializar" value="Se Serializará" trackMouse="focus"/>
+                        </p:inputText>
+                        <p:commandButton value="REGISTRAR" actionListener="#{serializarC.registrar()}" icon="pi pi-save" style="font-weight:bold; font-size:20px"
+                                         update="form7 mensajes">
+                            <p:confirm header="Confirmación" type="popup" message="¿Deseas Registrar?" icon="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
+                    </p:panelGrid>
+                </center>
+            </h:form>
+            <br/>
+            
+            <center>
+                <h:form>
+                    <h1 style="color:black; font-weight:bold; font-size:25px">Algoritmo hash SHA-512</h1>
+                </h:form>
+            </center>
+            <h:form id="form8">
+                <center>
+                    <p:panelGrid columns="5" styleClass="ui-noborder">
+                        <p:inputText id="serializar" value="#{serializarC.serializar.SERDEM}" maxlength="50" style="width:130px;" required="true" requiredMessage="Ingrese un Texto">
+                            <p:ajax update="msgSerializar" event="keyup" delay="800"/>
+                            <p:tooltip for="serializar" value="Ingrese un Texto" trackMouse="focus"/>
+                        </p:inputText>
+                        <p:message id="msgSerializar" for="serializar"/>
+                        <p:commandButton value="SERIALIZAR" actionListener="#{serializarC.securePassword_SHA_512()}" icon="pi pi-arrow-right" style="font-weight:bold; font-size:16px"
+                                         update="msgSerializar deserializar mensajes">
+                        </p:commandButton>
+                        <p:inputText id="deserializar" value="#{serializarC.serializar.DESDEM}" maxlength="50" style="width:970px;">
+                            <p:tooltip for="deserializar" value="Se Serializará" trackMouse="focus"/>
+                        </p:inputText>
+                        <p:commandButton value="REGISTRAR" actionListener="#{serializarC.registrar()}" icon="pi pi-save" style="font-weight:bold; font-size:20px"
+                                         update="form8 mensajes">
+                            <p:confirm header="Confirmación" type="popup" message="¿Deseas Registrar?" icon="pi pi-exclamation-triangle"/>
+                        </p:commandButton>
+                    </p:panelGrid>
+                </center>
+            </h:form>
+            <br/>
+            
+            <h:form>
+                <p:confirmPopup style="margin: initial" global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirm-popup-yes" icon="pi pi-check" async="true"/>
+                    <p:commandButton value="No" type="button" styleClass="ui-confirm-popup-no" icon="pi pi-times"/>
+                </p:confirmPopup>
+                <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+                    <p:commandButton value="Si" type="button" styleClass="ui-confirmdialog-yes" icon="pi pi-check"/>
+                    <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="pi pi-times"/>
+                </p:confirmDialog>
+            </h:form>
+        </h:body>
+    </ui:define>
+
+</ui:composition>
